@@ -1,0 +1,269 @@
+MPASM 02.30 Released           CWTOOL.ASM   10-27-2000  20:24:28         PAGE  1
+
+                          MPASM Cross Reference File
+
+LABEL                            TYPE FILE NAME    SOURCE FILE REFERENCES
+-----                            ---- ---------    ----------------------
+
+__16F84                           V   CWTOOL.ASM       0*
+ag_parm                           A   CWTOOL.ASM     431.  995*
+agsped1                           A   CWTOOL.ASM     447.  449*
+agsped2                           A   CWTOOL.ASM     443.  452*
+agspeed                           A   CWTOOL.ASM     396.  439*
+bit_CW                            C   CWTOOL.ASM      43*  380.
+bit_EN                            C   CWTOOL.ASM      45*  714.  718.  722.  726. 1260. 1267. 1278. 1285.
+bit_P0                            C   CWTOOL.ASM      41*  368.  375.
+bit_P1                            C   CWTOOL.ASM      42*  398.
+bit_RS                            C   CWTOOL.ASM      46*
+bytelcd                           C   CWTOOL.ASM      70*  405.  524.  730.  735.  740.  745.  751.  862. 1246. 1256. 1263. 1274.
+                                                    1281.
+c                                 C   CWTOOL.ASM     106*  295.  394.  402.  415.  430.  442.  820.  836.  936.  945.  954.  963.
+                                                     972.  981. 1054. 1068. 1072. 1086. 1090. 1103. 1114. 1125. 1141. 1152. 1163.
+                                                    1192. 1219. 1223.
+c_minof                           A   CWTOOL.ASM     391. 1083*
+c_minon                           A   CWTOOL.ASM     426. 1065*
+chrparm                           C   CWTOOL.ASM     124*  356.  419.  440. 1042.
+cmdlcd                            A   CWTOOL.ASM     731.  736.  741.  746.  752. 1255*
+cntchar                           C   CWTOOL.ASM      69*  357.  420.  441.  444.  453.
+conve01                           A   CWTOOL.ASM     818*  826.
+conve02                           A   CWTOOL.ASM     821.  824*
+conve10                           A   CWTOOL.ASM     823.  828*
+conve11                           A   CWTOOL.ASM     834*  842.
+conve12                           A   CWTOOL.ASM     837.  840*
+conve20                           A   CWTOOL.ASM     839.  844*
+convert                           A   CWTOOL.ASM     813*  872.
+ctrsegn                           C   CWTOOL.ASM      91*  334.  427.  429. 1023.
+cw_rate                           A   CWTOOL.ASM     448. 1039*
+cw_rate1                          A   CWTOOL.ASM    1055. 1057*
+dc                                C   CWTOOL.ASM     105*
+dec_sg                            A   CWTOOL.ASM     432.  930*
+dec_sg1                           A   CWTOOL.ASM     932.  939*
+dec_sg2                           A   CWTOOL.ASM     941.  948*
+dec_sg3                           A   CWTOOL.ASM     950.  957*
+dec_sg4                           A   CWTOOL.ASM     959.  966*
+dec_sg5                           A   CWTOOL.ASM     968.  975*
+dec_sg6                           A   CWTOOL.ASM     977.  984*
+decod                             A   CWTOOL.ASM     397.  418.  466*
+decod1                            A   CWTOOL.ASM     472*
+decod15                           A   CWTOOL.ASM     492.  496*
+decod3                            A   CWTOOL.ASM     476.  480*
+decod31                           A   CWTOOL.ASM     500.  504*
+decod63                           A   CWTOOL.ASM     508.  512*
+decod7                            A   CWTOOL.ASM     484.  488*
+del05                             A   CWTOOL.ASM     365.  367. 1307*
+del051                            A   CWTOOL.ASM    1310* 1318.
+del052                            A   CWTOOL.ASM    1313* 1316.
+del50                             A   CWTOOL.ASM     715.  719.  723.  727.  732.  737.  742.  747.  753. 1291*
+del51                             A   CWTOOL.ASM    1294* 1302.
+del52                             A   CWTOOL.ASM    1297* 1300.
+delcd                             A   CWTOOL.ASM    1261. 1268. 1279. 1286. 1323*
+MPASM 02.30 Released           CWTOOL.ASM   10-27-2000  20:24:28         PAGE  2
+
+                          MPASM Cross Reference File
+
+LABEL                            TYPE FILE NAME    SOURCE FILE REFERENCES
+-----                            ---- ---------    ----------------------
+
+delcd1                            A   CWTOOL.ASM    1326* 1330.
+dispar1                           A   CWTOOL.ASM     373*  376.
+disparm                           A   CWTOOL.ASM     369.  371*
+displ                             A   CWTOOL.ASM     372.  860*
+displ0                            A   CWTOOL.ASM     866*  869.
+displ1                            A   CWTOOL.ASM     876.  879*
+dividi                            A   CWTOOL.ASM    1050. 1212*
+dividi1                           A   CWTOOL.ASM    1214* 1220. 1224.
+eeadr                             C   CWTOOL.ASM      56*
+eecon1                            C   CWTOOL.ASM      63*
+eecon2                            C   CWTOOL.ASM      64*
+eedata                            C   CWTOOL.ASM      55*
+en_ordf                           A   CWTOOL.ASM    1153. 1164. 1171*
+en_ordn                           A   CWTOOL.ASM    1115. 1126. 1133*
+end_mof                           A   CWTOOL.ASM    1087. 1091. 1095*
+end_mon                           A   CWTOOL.ASM    1069. 1073. 1077*
+end_sg                            A   CWTOOL.ASM     938.  947.  956.  965.  974.  983.  986*
+endcd                             A   CWTOOL.ASM    1331*
+endcmlc                           A   CWTOOL.ASM    1269*
+endconv                           A   CWTOOL.ASM     851*
+enddiv                            A   CWTOOL.ASM    1230*
+endecod                           A   CWTOOL.ASM     478.  486.  494.  502.  510.  518.  522*
+endl05                            A   CWTOOL.ASM    1319*
+endl50                            A   CWTOOL.ASM    1303*
+endlcd                            A   CWTOOL.ASM     754*
+endmolt                           A   CWTOOL.ASM    1198*
+endpanl                           A   CWTOOL.ASM     804*
+endsend                           A   CWTOOL.ASM    1251*
+endtb_a                           A   CWTOOL.ASM     146*
+endtb_b                           A   CWTOOL.ASM     162*
+endtb_c                           A   CWTOOL.ASM     186*
+endtb_d                           A   CWTOOL.ASM     218*
+endtb_e                           A   CWTOOL.ASM     254*
+endtb_f                           A   CWTOOL.ASM     282*
+endwrlc                           A   CWTOOL.ASM    1287*
+f                                 C   CWTOOL.ASM     111*
+fsr                               C   CWTOOL.ASM      52* 1243. 1248.
+gie                               C   CWTOOL.ASM     119*  332.
+indf                              C   CWTOOL.ASM      48* 1245.
+inilcd                            A   CWTOOL.ASM     360.  711*
+intcon                            C   CWTOOL.ASM      58*  302.  331.  332.
+irp                               C   CWTOOL.ASM     107*
+main00                            A   CWTOOL.ASM     130.  311*
+main10                            A   CWTOOL.ASM     364*  395.  399.  403.  407.  433.
+main15                            A   CWTOOL.ASM     366*  386.  416.  421.
+main20                            A   CWTOOL.ASM     370.  379*
+moltip                            A   CWTOOL.ASM    1001. 1010. 1019. 1044. 1047. 1182*
+moltip1                           A   CWTOOL.ASM    1188* 1197.
+moltip2                           A   CWTOOL.ASM    1193. 1195*
+nodecod                           A   CWTOOL.ASM     516.  520*
+op_reg                            C   CWTOOL.ASM      60*  322.  323.  324.  325.  326.
+ord_of                            A   CWTOOL.ASM    1094. 1138*
+MPASM 02.30 Released           CWTOOL.ASM   10-27-2000  20:24:28         PAGE  3
+
+                          MPASM Cross Reference File
+
+LABEL                            TYPE FILE NAME    SOURCE FILE REFERENCES
+-----                            ---- ---------    ----------------------
+
+ord_of1                           A   CWTOOL.ASM    1142. 1149*
+ord_of2                           A   CWTOOL.ASM    1160*
+ord_on                            A   CWTOOL.ASM    1076. 1100*
+ord_on1                           A   CWTOOL.ASM    1104. 1111*
+ord_on2                           A   CWTOOL.ASM    1122*
+panel                             A   CWTOOL.ASM     361.  759*
+pcl                               C   CWTOOL.ASM      50*  139.  151.  167.  191.  223.  259.
+pclath                            C   CWTOOL.ASM      57*
+pldata                            C   CWTOOL.ASM      71*  352.  526.  553.  581.  609.  637.  665.  693.  937.  946.  955.  964.
+                                                     973.  982.
+plval                             C   CWTOOL.ASM      72*  351.  445.  469.  474.  482.  490.  498.  506.  514.  525.  931.  933.
+                                                     940.  942.  949.  951.  958.  960.  967.  969.  976.  978.  985.
+port_a                            C   CWTOOL.ASM      53*  313.  368.  375.  380.  398.
+port_b                            C   CWTOOL.ASM      54*  314.  713.  714.  717.  718.  721.  722.  725.  726. 1259. 1260. 1266.
+                                                    1267. 1277. 1278. 1284. 1285.
+ps0                               C   CWTOOL.ASM     112*  322.
+ps1                               C   CWTOOL.ASM     113*  323.
+ps2                               C   CWTOOL.ASM     114*  324.
+psa                               C   CWTOOL.ASM     115*  325.
+ric_a                             A   CWTOOL.ASM     477.  539*
+ric_a1                            A   CWTOOL.ASM     541*  558.
+ric_a2                            A   CWTOOL.ASM     548.  551*
+ric_a3                            A   CWTOOL.ASM     555.  559*
+ric_a4                            A   CWTOOL.ASM     550.  563*
+ric_b                             A   CWTOOL.ASM     485.  567*
+ric_b1                            A   CWTOOL.ASM     569*  586.
+ric_b2                            A   CWTOOL.ASM     576.  579*
+ric_b3                            A   CWTOOL.ASM     583.  587*
+ric_b4                            A   CWTOOL.ASM     578.  591*
+ric_c                             A   CWTOOL.ASM     493.  595*
+ric_c1                            A   CWTOOL.ASM     597*  614.
+ric_c2                            A   CWTOOL.ASM     604.  607*
+ric_c3                            A   CWTOOL.ASM     611.  615*
+ric_c4                            A   CWTOOL.ASM     606.  619*
+ric_d                             A   CWTOOL.ASM     501.  623*
+ric_d1                            A   CWTOOL.ASM     625*  642.
+ric_d2                            A   CWTOOL.ASM     632.  635*
+ric_d3                            A   CWTOOL.ASM     639.  643*
+ric_d4                            A   CWTOOL.ASM     634.  647*
+ric_e                             A   CWTOOL.ASM     509.  651*
+ric_e1                            A   CWTOOL.ASM     653*  670.
+ric_e2                            A   CWTOOL.ASM     660.  663*
+ric_e3                            A   CWTOOL.ASM     667.  671*
+ric_e4                            A   CWTOOL.ASM     662.  675*
+ric_f                             A   CWTOOL.ASM     517.  679*
+ric_f1                            A   CWTOOL.ASM     681*  698.
+ric_f2                            A   CWTOOL.ASM     688.  691*
+ric_f3                            A   CWTOOL.ASM     695.  699*
+ric_f4                            A   CWTOOL.ASM     690.  703*
+rit1                              C   CWTOOL.ASM      67* 1293. 1301. 1309. 1317. 1325. 1329.
+rit2                              C   CWTOOL.ASM      68* 1296. 1299. 1312. 1315.
+rowparm                           C   CWTOOL.ASM     125*  749.  864.
+MPASM 02.30 Released           CWTOOL.ASM   10-27-2000  20:24:28         PAGE  4
+
+                          MPASM Cross Reference File
+
+LABEL                            TYPE FILE NAME    SOURCE FILE REFERENCES
+-----                            ---- ---------    ----------------------
+
+rp0                               C   CWTOOL.ASM     109*  315.  328.
+rp1                               C   CWTOOL.ASM     108*
+save_s                            C   CWTOOL.ASM      94*  288.  304.
+save_w                            C   CWTOOL.ASM      93*  286.  306.  307.
+sendlc1                           A   CWTOOL.ASM    1244* 1250.
+sendlcd                           A   CWTOOL.ASM     770.  781.  792.  803.  882.  894.  906.  916. 1241*
+set_off                           A   CWTOOL.ASM     412.  422*
+set_on                            A   CWTOOL.ASM     387*
+sgparm                            C   CWTOOL.ASM     126*  428.
+speed                             C   CWTOOL.ASM      88*  355.  870. 1059.
+st_off                            A   CWTOOL.ASM     381.  410*
+st_on                             A   CWTOOL.ASM     384*
+status                            C   CWTOOL.ASM      51*  287.  295.  305.  315.  328.  394.  402.  415.  430.  442.  446.  470.
+                                                     475.  483.  491.  499.  507.  515.  547.  554.  575.  582.  603.  610.  631.
+                                                     638.  659.  666.  687.  694.  820.  836.  875.  936.  945.  954.  963.  972.
+                                                     981. 1054. 1068. 1072. 1086. 1090. 1103. 1114. 1125. 1141. 1152. 1163. 1192.
+                                                    1219. 1223.
+swinput                           C   CWTOOL.ASM      90*  335.  336.  385.  388.  389.  411.  423.  424.
+swoff                             C   CWTOOL.ASM     121*  336.  389.  411.  423.
+swon                              C   CWTOOL.ASM     120*  385.  388.  424.
+t0cs                              C   CWTOOL.ASM     116*  326.
+t0ie                              C   CWTOOL.ASM     118*  331.
+t0if                              C   CWTOOL.ASM     117*  302.
+tab_a                             A   CWTOOL.ASM     137*  543.  562.
+tab_b                             A   CWTOOL.ASM     149*  571.  590.
+tab_c                             A   CWTOOL.ASM     165*  599.  618.
+tab_d                             A   CWTOOL.ASM     189*  627.  646.
+tab_e                             A   CWTOOL.ASM     221*  655.  674.
+tab_f                             A   CWTOOL.ASM     257*  683.  702.
+timchr1                           C   CWTOOL.ASM      75*  298.  353.  450. 1048. 1053.
+timchr2                           C   CWTOOL.ASM      76*  292.  294.  297.  354.  451.
+timeoff                           C   CWTOOL.ASM      74*  291.  350.  393.  401.  414.  417.  425. 1085. 1088. 1092.
+timeon                            C   CWTOOL.ASM      73*  290.  349.  390.  935.  944.  953.  962.  971.  980. 1067. 1070. 1074.
+tmax_of                           C   CWTOOL.ASM      87*  341.  400. 1021.
+tmed_of                           C   CWTOOL.ASM      86*  339.  392. 1012.
+tmed_on                           C   CWTOOL.ASM      85*  338.  934.  943.  952.  961.  970.  979. 1003.
+tmin1_of                          C   CWTOOL.ASM      81*  346. 1028. 1150. 1154. 1157.
+tmin1_on                          C   CWTOOL.ASM      78*  343. 1025. 1112. 1116. 1119.
+tmin2_of                          C   CWTOOL.ASM      82*  347. 1029. 1139. 1143. 1146. 1151. 1156. 1159. 1161. 1165. 1168.
+tmin2_on                          C   CWTOOL.ASM      79*  344. 1026. 1101. 1105. 1108. 1113. 1118. 1121. 1123. 1127. 1130.
+tmin3_of                          C   CWTOOL.ASM      83*  348. 1006. 1015. 1030. 1089. 1093. 1140. 1145. 1148. 1162. 1167. 1170.
+tmin3_on                          C   CWTOOL.ASM      80*  345.  997. 1027. 1071. 1075. 1102. 1107. 1110. 1124. 1129. 1132.
+tmr0                              C   CWTOOL.ASM      49*  301.  330.
+tmrint                            A   CWTOOL.ASM     134.  285*
+tmrint1                           A   CWTOOL.ASM     296.  299*
+tris_a                            C   CWTOOL.ASM      61*  318.
+tris_b                            C   CWTOOL.ASM      62*  320.
+w                                 C   CWTOOL.ASM     110*
+w_conv                            C   CWTOOL.ASM      96*  468.  523.  564.  592.  620.  648.  676.  704.  815.  819.  822.  835.
+                                                     838.  848.
+w_count                           C   CWTOOL.ASM      97*  542.  556.  560.  570.  584.  588.  598.  612.  616.  626.  640.  644.
+                                                     654.  668.  672.  682.  696.  700.  769.  780.  791.  802.  816.  825.  829.
+MPASM 02.30 Released           CWTOOL.ASM   10-27-2000  20:24:28         PAGE  5
+
+                          MPASM Cross Reference File
+
+LABEL                            TYPE FILE NAME    SOURCE FILE REFERENCES
+-----                            ---- ---------    ----------------------
+
+                                                     833.  841.  845.  865.  868.  881.  893.  905.  915. 1186. 1190. 1213. 1216.
+                                                    1227. 1228. 1249.
+w_num1                            C   CWTOOL.ASM      98*  544.  546.  552.  572.  574.  580.  600.  602.  608.  628.  630.  636.
+                                                     656.  658.  664.  684.  686.  692.  761.  772.  783.  794.  831.  873.  878.
+                                                     885.  897.  909. 1056. 1058. 1106. 1109. 1117. 1120. 1128. 1131. 1144. 1147.
+                                                    1155. 1158. 1166. 1169. 1184. 1194. 1222. 1229. 1242.
+w_num2                            C   CWTOOL.ASM      99*  763.  774.  785.  796.  847.  887.  899.  911.  998. 1002. 1007. 1011.
+                                                    1016. 1020. 1041. 1051. 1052. 1185. 1191. 1218. 1226.
+w_num3                            C   CWTOOL.ASM     100*  765.  776.  787.  798.  850.  889.  901.  913. 1000. 1009. 1018. 1043.
+                                                    1046. 1049. 1187. 1196. 1217. 1225.
+w_num4                            C   CWTOOL.ASM     101*  767.  778.  789.  800.  814.  871.  891.  903.
+wrtlcd                            A   CWTOOL.ASM     406.  527.  867. 1247. 1273*
+z                                 C   CWTOOL.ASM     104*  446.  470.  475.  483.  491.  499.  507.  515.  547.  554.  575.  582.
+                                                     603.  610.  631.  638.  659.  666.  687.  694.  875.
+
+
+LABEL TYPES
+-----------
+A  Address 
+C  Constant
+E  External
+M  Macro   
+S  Segment 
+U  Unknown 
+V  Variable
+X  Other   
