@@ -1,0 +1,50 @@
+digraph CW_reader
+{
+     size="6,7";
+    rankdir="LR"; ranksep=1.5;
+    node [shape=record, fontname="Helvetica",fontsize=16,
+	style=filled, fillcolor=azure2];
+    CWreadr [shape=record, fontname="Helvetica-bold",fontsize=16,
+	style=filled, fillcolor=wheat];
+    edge [ weight=10 ];
+
+    CWreadr -> Initialize;
+    CWreadr -> inilcd;
+    CWreadr -> panel;
+    CWreadr -> del05;
+    CWreadr -> displ;
+    CWreadr -> c_minof;
+    CWreadr -> agspeed;
+    CWreadr -> decod;
+    CWreadr -> c_minon;
+    CWreadr -> ag_parm;
+    CWreadr -> dec_sg;
+    decod -> ric_a;
+    decod -> ric_b;
+    decod -> ric_c;
+    decod -> ric_d;
+    decod -> ric_e;
+    decod -> ric_f;
+    decod -> wrtlcd;
+    ag_parm -> moltip;
+    c_minon -> ord_on;
+    c_minof -> ord_of;
+    inilcd -> del50;
+    inilcd -> cmdlcd;
+    sendlcd -> wrtlcd;
+    cmdlcd -> delcd;
+    wrtlcd -> delcd;
+    cw_rate -> moltip;
+    cw_rate -> dividi;
+    agspeed -> cw_rate;
+    displ -> wrtlcd;
+    displ -> convert;
+    displ -> sendlcd;
+    ric_a -> tab_a;
+    ric_b -> tab_b;
+    ric_c -> tab_c;
+    ric_d -> tab_d;
+    ric_e -> tab_e;
+    ric_f -> tab_f;
+    panel -> sendlcd;
+}

@@ -1,0 +1,92 @@
+MPASM 03.80 Released                            CWWELCOME.ASM   2-11-2005  15:18:00         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       Welcome message
+                      00002 
+  0000                00003                 global  panel
+  0000                00004                 extern  sendlcd
+  0000                00005                 extern          w_num1,w_num2,w_num3,w_num4,w_count
+                      00006 
+                      00007                 code
+                      00008 
+                      00009 ;       Initial text display routine 
+                      00010 ;
+0000                  00011 panel
+0000   3020           00012         movlw    " "            ; display " CW "
+0001   00??           00013         movwf    w_num1
+0002   3043           00014         movlw    "C"
+0003   00??           00015         movwf    w_num2
+0004   3057           00016         movlw    "W"
+0005   00??           00017         movwf    w_num3
+0006   3020           00018         movlw    " "
+0007   00??           00019         movwf    w_num4
+0008   3004           00020         movlw    d'4'
+0009   00??           00021         movwf    w_count
+000A   2???           00022         call     sendlcd
+000B   3044           00023         movlw    "D"            ; display "Deco"
+000C   00??           00024         movwf    w_num1
+000D   3065           00025         movlw    "e"
+000E   00??           00026         movwf    w_num2
+000F   3063           00027         movlw    "c"
+0010   00??           00028         movwf    w_num3
+0011   306F           00029         movlw    "o"
+0012   00??           00030         movwf    w_num4
+0013   3004           00031         movlw    d'4'
+0014   00??           00032         movwf    w_count
+0015   2???           00033         call     sendlcd
+0016   3064           00034         movlw    "d"            ; display "der "
+0017   00??           00035         movwf    w_num1
+0018   3065           00036         movlw    "e"
+0019   00??           00037         movwf    w_num2
+001A   3072           00038         movlw    "r"
+001B   00??           00039         movwf    w_num3
+001C   3020           00040         movlw    " "
+001D   00??           00041         movwf    w_num4
+001E   3004           00042         movlw    d'4'
+001F   00??           00043         movwf    w_count
+0020   2???           00044         call     sendlcd
+0021   3020           00045         movlw    " "            ; display "  -> "
+0022   00??           00046         movwf    w_num1
+0023   3020           00047         movlw    " "
+0024   00??           00048         movwf    w_num2
+0025   307E           00049         movlw    0x7e
+0026   00??           00050         movwf    w_num3
+0027   3020           00051         movlw    " "
+0028   00??           00052         movwf    w_num4
+0029   3004           00053         movlw    d'4'
+MPASM 03.80 Released                            CWWELCOME.ASM   2-11-2005  15:18:00         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+002A   00??           00054         movwf    w_count
+002B   2???           00055         call     sendlcd
+002C                  00056 endpanl
+002C   0008           00057         return
+                      00058 
+                      00059                 end
+MPASM 03.80 Released                            CWWELCOME.ASM   2-11-2005  15:18:00         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F628                          00000001
+endpanl                           0000002C
+panel                             00000000
+sendlcd                           00000000
+w_count                           00000000
+w_num1                            00000000
+w_num2                            00000000
+w_num3                            00000000
+w_num4                            00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

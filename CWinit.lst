@@ -1,0 +1,321 @@
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       Initialize I/O
+                      00002                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00003                 include         CWdefs.inc
+                      00001 ;       Constants used by multiple routines
+                      00002 
+                      00003 ;       program constants definitions  
+  00000000            00004 swon    equ      0x00
+  00000001            00005 swoff   equ      0x01   
+                      00006 
+                      00007 ;       program settable parameters 
+  00000008            00008 chrparm equ      0x08           ; chars number for speed calculation
+  00000028            00009 rowparm equ      0x28           ; chars number on the LCD raw
+  0000000F            00010 sgparm  equ      0x0f           ; dit/dashes number for param. refresh  
+                      00011          
+                      00012 ; port_a bits
+  00000001            00013 bit_P0  equ     1
+  00000002            00014 bit_P1  equ     2
+  00000004            00015 bit_CW  equ     4
+                      00016 ; port_b bits
+  00000003            00017 bit_EN  equ     3
+  00000001            00018 bit_RS  equ     1
+                      00019 
+                      00004 
+  0000                00005                 global  Initialize
+  0000                00006                 extern  timeon,timeoff,timchr1,timchr2
+  0000                00007                 extern  ctrsegn,swinput,tmed_on,tmed_of,tmax_of
+  0000                00008                 extern  tmin1_on,tmin1_of,tmin2_on,tmin2_of,tmin3_on,tmin3_of
+  0000                00009                 extern  plval,pldata,speed,cntchar
+                      00010 
+                      00011         code
+0000                  00012 Initialize
+                      00013 ; turn off comparators
+0000   3007           00014         movlw           H'07'           ; Turn off comparators
+0001   009F           00015         movwf           CMCON           ; so they can be I/O
+                      00016 
+                      00017 ;       set initial value to I/O pins, timer and control registers
+0002   0185           00018         clrf     PORTA          ; clear data registers
+0003   0186           00019         clrf     PORTB
+                      00020     errorlevel  -302
+0004   1683           00021         bsf      STATUS,RP0     ; memory bank1 set to address special registers
+                      00022 
+0005   30FF           00023         movlw    0xff           ; all PORTA pins as input
+0006   0085           00024         movwf    TRISA
+0007   3000           00025         movlw    0x00           ; all PORTB pins as output
+0008   0086           00026         movwf    TRISB
+                      00027 
+0009   1401           00028         bsf      OPTION_REG,PS0
+000A   1081           00029         bcf      OPTION_REG,PS1 ; set prescaler ratio to 64
+000B   1501           00030         bsf      OPTION_REG,PS2 
+000C   1181           00031         bcf      OPTION_REG,PSA ; assign prescaler to timer
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000D   1281           00032         bcf      OPTION_REG,T0CS        ; assign counter to internal clock
+                      00033 
+000E   1283           00034         bcf      STATUS,RP0     ; memory bank0 reset to address data RAM
+                      00035     errorlevel  +302
+000F   3064           00036         movlw    d'100'
+0010   0081           00037         movwf    TMR0           ; set TMR0 initial value to 100
+0011   168B           00038         bsf      INTCON,T0IE    ; timer interrupt enable
+0012   178B           00039         bsf      INTCON,GIE     ; global interrupt enable
+                      00040  
+0013   01??           00041         clrf     ctrsegn        ; clear received signs counter
+0014   01??           00042         clrf     swinput        ; clear input state indicators
+0015   1480           00043         bsf      swinput,swoff  ; set default OFF state
+0016   300F           00044         movlw    h'0f'          ; set HIGH and LOW mean time to 150 mS 
+0017   00??           00045         movwf    tmed_on        ;  
+0018   00??           00046         movwf    tmed_of
+0019   3026           00047         movlw    h'26'          ; set max LOW time to 380 ms 
+001A   00??           00048         movwf    tmax_of        ;
+001B   30FF           00049         movlw    h'ff'          ; set min ON and OFF times to high-value
+001C   00??           00050         movwf    tmin1_on       ; 
+001D   00??           00051         movwf    tmin2_on       ;
+001E   00??           00052         movwf    tmin3_on
+001F   00??           00053         movwf    tmin1_of
+0020   00??           00054         movwf    tmin2_of
+0021   00??           00055         movwf    tmin3_of
+                      00056 
+0022   01??           00057         clrf     timeon         ; clear ON and OFF timers 
+0023   01??           00058         clrf     timeoff
+0024   01??           00059         clrf     timchr1        ; clear received characters timers 
+0025   01??           00060         clrf     timchr2
+                      00061 
+0026   01??           00062         clrf     plval          ; clear PLVAL and PLDATA
+0027   01??           00063         clrf     pldata
+0028   01??           00064         clrf     speed
+0029   3008           00065         movlw    chrparm        ; set to CHRPARM the characters counter  
+002A   00??           00066         movwf    cntchar        ; to force count start
+002B   0008           00067         return
+                      00068 
+                      00069         end
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+Initialize                        00000000
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OERR                              00000001
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+MPASM 03.80 Released                               CWINIT.ASM   2-11-2005  15:17:50         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+bit_CW                            00000004
+bit_EN                            00000003
+bit_P0                            00000001
+bit_P1                            00000002
+bit_RS                            00000001
+chrparm                           00000008
+cntchar                           00000000
+ctrsegn                           00000000
+pldata                            00000000
+plval                             00000000
+rowparm                           00000028
+sgparm                            0000000F
+speed                             00000000
+swinput                           00000000
+swoff                             00000001
+swon                              00000000
+timchr1                           00000000
+timchr2                           00000000
+timeoff                           00000000
+timeon                            00000000
+tmax_of                           00000000
+tmed_of                           00000000
+tmed_on                           00000000
+tmin1_of                          00000000
+tmin1_on                          00000000
+tmin2_of                          00000000
+tmin2_on                          00000000
+tmin3_of                          00000000
+tmin3_on                          00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     7 suppressed
+
+

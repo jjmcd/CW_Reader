@@ -1,0 +1,419 @@
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001                 title           "CW Decoding Program"
+                      00002                 subtitle        "CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $"
+                      00003 ;**************************************************************
+                      00004 ;                    CW decoding program                      *
+                      00005 ;                for PIC16F628 microprocessor                 *
+                      00006 ;                     40 chars display                        *
+                      00007 ;**************************************************************
+                      00008 ;       displays on LCD the last N characters received        *
+                      00009 ;       with automatic left shift of the text                 *
+                      00010 ;       A "service" push button (P1) displays                 *    
+                      00011 ;       the CW rate in characters / minute                    *
+                      00012 ;                                                             *
+                      00013 ;       I/O pins configuration :                                  *
+                      00014 ;                                                             *
+                      00015 ;       RB0 : Enable  (RB3)                                       *                           
+                      00016 ;       RB1 : RS                                                  *
+                      00017 ;       RB2 : n/c                                             *
+                      00018 ;       RB3 : n/c                                             *  
+                      00019 ;       RB4 : LCD (B4) LSB                                    *
+                      00020 ;       RB5 : LCD (B5)                                        *
+                      00021 ;       RB6 : LCD (B6)                                        *
+                      00022 ;       RB7 : LCD (B7) MSB                                    *  
+                      00023 ;                                                             *
+                      00024 ;       RA0 : input CW      (RA4)                                 *
+                      00025 ;       RA1 : P0                                              *  
+                      00026 ;       RA2 : n/c                                             *  
+                      00027 ;       RA3 : n/c                                             *  
+                      00028 ;       RA4 : n/c                                             *  
+                      00029 ;                                                             * 
+                      00030 ;**************************************************************
+                      00031 ;       processor pic16f628                                       *
+                      00032 ;       no code protection                                        * 
+                      00033 ;       power up timer disabled                                   *
+                      00034 ;       WDT enabled                                               *
+                      00035 ;       XT oscillator                                             *             
+                      00036 ;**************************************************************
+                      00037                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+2007   3F21           00038                 __config        _XT_OSC & _WDT_OFF & _BODEN_OFF & _LVP_OFF & _PWRTE_ON
+                      00039                 include         CWdefs.inc
+                      00001 ;       Constants used by multiple routines
+                      00002 
+                      00003 ;       program constants definitions  
+  00000000            00004 swon    equ      0x00
+  00000001            00005 swoff   equ      0x01   
+                      00006 
+                      00007 ;       program settable parameters 
+  00000008            00008 chrparm equ      0x08           ; chars number for speed calculation
+  00000028            00009 rowparm equ      0x28           ; chars number on the LCD raw
+  0000000F            00010 sgparm  equ      0x0f           ; dit/dashes number for param. refresh  
+                      00011          
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  2
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00012 ; port_a bits
+  00000001            00013 bit_P0  equ     1
+  00000002            00014 bit_P1  equ     2
+  00000004            00015 bit_CW  equ     4
+                      00016 ; port_b bits
+  00000003            00017 bit_EN  equ     3
+  00000001            00018 bit_RS  equ     1
+                      00019 
+                      00040 
+                      00041 ;       external functions
+  0000                00042                 extern          tmrint,Initialize
+  0000                00043                 extern          del05
+  0000                00044                 extern          inilcd,bytelcd,wrtlcd
+  0000                00045                 extern          panel,displ,cw_rate,agspeed
+  0000                00046                 extern          c_minof,c_minon,decod,ag_parm,dec_sg
+                      00047 ;       provided storage        
+  0000                00048                 global          swinput
+                      00049 ;       external storage
+  0000                00050                 extern          timeon,timeoff
+  0000                00051                 extern          ctrsegn,tmed_of,tmax_of
+  0000                00052                 extern          cntchar
+                      00053 
+                      00054                 udata
+0000                  00055 swinput res                     1                               ; input ON/OFF state indicator
+                      00056 
+                      00057 ;       Reset address
+                      00058 STARTUP code
+0000   2???           00059                 goto             main00
+                      00060 
+                      00061 ;       main program
+                      00062                 code
+0000                  00063 main00
+0000   2???           00064                 call            Initialize
+                      00065 
+                      00066 ;       initialize LCD display
+0001   2???           00067                 call            inilcd
+0002   2???           00068                 call            panel
+                      00069 
+                      00070 ;       main loop
+0003                  00071 main10
+0003   2???           00072                 call            del05                   ; delay 5 mS
+0004                  00073 main15
+0004   2???           00074                 call            del05                   ; delay 5 mS
+0005   1C85           00075                 btfss           PORTA,bit_P0    ; verify if P1 pressed
+0006   2???           00076                 goto            disparm                 ; if so call parameters display routine  
+0007   2???           00077                 goto            main20
+0008                  00078 disparm
+0008   2???           00079                 call            displ
+0009                  00080 dispar1
+0009   0064           00081                 clrwdt                                          ; watchdog clear
+000A   1C85           00082                 btfss           PORTA,bit_P0    ; display remains active as long as 
+000B   2???           00083                 goto            dispar1                 ; P1 is pressed
+                      00084 
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  3
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00085 ;       ramo di decodifica CW
+000C                  00086 main20
+000C   1E05           00087                 btfss           PORTA,bit_CW    ; verify if signal HIGH on P0 
+000D   2???           00088                 goto            st_off                  ; 
+                      00089 
+                      00090 ;       decoding branch for an HIGH input level 
+000E                  00091 st_on
+000E   1800           00092                 btfsc           swinput,swon    ; verify if input state changed 
+000F   2???           00093                 goto            main15                  ; otherwise wait (goto loop)
+0010                  00094 set_on
+0010   1400           00095                 bsf                     swinput,swon    ; if changed set SWON
+0011   1080           00096                 bcf                     swinput,swoff   ; reset SWOFF
+0012   01??           00097                 clrf            timeon                  ; and clear TIMEON  
+0013   2???           00098                 call            c_minof                 ; refresh min OFF-state time
+0014   08??           00099                 movf            tmed_of,W
+0015   02??           00100                 subwf           timeoff,W               ; verify if OFF-state time greater
+0016   1C03           00101                 btfss           STATUS,C                ; inter-character time (tmed_of)
+0017   2???           00102                 goto            main10                  ; if less re-cycle otherwise
+0018   2???           00103                 call            agspeed                 ; update CW speed value 
+0019   2???           00104                 call            decod                   ; decode and display received char
+001A   1D05           00105                 btfss           PORTA,bit_P1    ; verify if 'space' mode active
+001B   2???           00106                 goto            main10                  ; otherwise re-cycle
+001C   08??           00107                 movf            tmax_of,W
+001D   02??           00108                 subwf           timeoff,W               ; verify if OFF-state greater  
+001E   1C03           00109                 btfss           STATUS,C                ; inter-word time (tmax_of)
+001F   2???           00110                 goto            main10                  ; if less re-cycle
+0020   3020           00111                 movlw           " "                             ; otherwise insert a space
+0021   00??           00112                 movwf           bytelcd                 ; on LCD display 
+0022   2???           00113                 call            wrtlcd                  ; at end re-cycle
+0023   2???           00114                 goto            main10          
+                      00115 
+                      00116 ;       decoding branch for a LOW input level
+0024                  00117 st_off 
+0024   1C80           00118                 btfss           swinput,swoff   ; verify if input state changed
+0025   2???           00119                 goto            set_off                 ; if so set SWON
+0026   30C8           00120                 movlw           d'200'                  ; otherwise verify if OFF state
+0027   02??           00121                 subwf           timeoff,W               ; duration greater 2 seconds
+0028   1C03           00122                 btfss           STATUS,C                ; if less (ris < 0) 
+0029   2???           00123                 goto            main15                  ; re-cycle (wait)
+002A   01??           00124                 clrf            timeoff                 ; if greater 2 seconds (ris > 0) clear timeof 
+002B   2???           00125                 call            decod                   ; decode last received character
+002C   3008           00126                 movlw           chrparm                 ; set characters counter  
+002D   00??           00127                 movwf           cntchar                 ; to force count start
+002E   2???           00128                 goto            main15                  ; and re-cycle (wait)
+002F                  00129 set_off
+002F   1480           00130                 bsf                     swinput,swoff   ; if input state changed set SWOFF
+0030   1000           00131                 bcf                     swinput,swon    ; reset SWON
+0031   01??           00132                 clrf            timeoff                 ; and clear TIMEOFF
+0032   2???           00133                 call            c_minon                 ; update min ON-state time
+0033   0A??           00134                 incf            ctrsegn,F               ; increment received signs counter
+0034   300F           00135                 movlw           sgparm                  ;
+0035   02??           00136                 subwf           ctrsegn,W               ; verify if more than N signs received 
+0036   1803           00137                 btfsc           STATUS,C                ;  
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  4
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0037   2???           00138                 call            ag_parm                 ; if ctrsegn > N refresh calculation parameters
+0038   2???           00139                 call            dec_sg                  ; and received sign decoding
+0039   2???           00140                 goto            main10                  ; at end re-cycle (wait)        
+                      00141         
+                      00142 ;       end main program
+                      00143                 end
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  5
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+Initialize                        00000000
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  6
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OERR                              00000001
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  7
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+MPASM 03.80 Released                              CWREADR.ASM   2-11-2005  15:17:46         PAGE  8
+CW Decoding Program
+CWreadr.asm $Revision: 1.4 $ $Date: 2005-02-11 15:15:30-05 $
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ag_parm                           00000000
+agspeed                           00000000
+bit_CW                            00000004
+bit_EN                            00000003
+bit_P0                            00000001
+bit_P1                            00000002
+bit_RS                            00000001
+bytelcd                           00000000
+c_minof                           00000000
+c_minon                           00000000
+chrparm                           00000008
+cntchar                           00000000
+ctrsegn                           00000000
+cw_rate                           00000000
+dec_sg                            00000000
+decod                             00000000
+del05                             00000000
+dispar1                           00000009
+disparm                           00000008
+displ                             00000000
+inilcd                            00000000
+main00                            00000000
+main10                            00000003
+main15                            00000004
+main20                            0000000C
+panel                             00000000
+rowparm                           00000028
+set_off                           0000002F
+set_on                            00000010
+sgparm                            0000000F
+st_off                            00000024
+st_on                             0000000E
+swinput                           00000000
+swoff                             00000001
+swon                              00000000
+timeoff                           00000000
+timeon                            00000000
+tmax_of                           00000000
+tmed_of                           00000000
+tmrint                            00000000
+wrtlcd                            00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

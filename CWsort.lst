@@ -1,0 +1,318 @@
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       Sort routines
+                      00002                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00003 
+  0000                00004                 global          ord_of,ord_on
+  0000                00005                 global          tmin1_on,tmin1_of,tmin2_on,tmin2_of,tmin3_on,tmin3_of
+  0000                00006                 extern          w_num1,w_num2,w_num3,w_num4,w_count
+                      00007 
+                      00008                 udata
+0000                  00009 tmin1_on res 1 ;     0x16               ;ON signal lowest duration
+0001                  00010 tmin2_on res 1 ;     0x17
+0002                  00011 tmin3_on res 1 ;     0x18 
+0003                  00012 tmin1_of res 1 ;         0x19           ;OFF signal lowest duration
+0004                  00013 tmin2_of res 1 ;         0x1a
+0005                  00014 tmin3_of res 1 ;         0x1b
+                      00015 
+                      00016                 code
+                      00017 
+                      00018 ;       Ascending sort routine for
+                      00019 ;       tmin1_on, tmin2_on, tmin3_on
+0000                  00020 ord_on
+0000   08??           00021         movf     tmin2_on,W     ; 
+0001   02??           00022         subwf    tmin3_on,W     ; calculate tmin3_on - tmin2_on
+0002   1803           00023         btfsc    STATUS,C       ;
+0003   2???           00024         goto     ord_on1        ; if result > 0 go on
+0004   08??           00025         movf     tmin2_on,W     ; otherwise swaps tmin2_on and tmin3_on 
+0005   00??           00026         movwf    w_num1         ;
+0006   08??           00027         movf     tmin3_on,W     ;  
+0007   00??           00028         movwf    tmin2_on       ;
+0008   08??           00029         movf     w_num1,W       ; 
+0009   00??           00030         movwf    tmin3_on       ;
+000A                  00031 ord_on1
+000A   08??           00032         movf     tmin1_on,W     ; 
+000B   02??           00033         subwf    tmin2_on,W     ; calculat tmin2_on - tmin1_on
+000C   1803           00034         btfsc    STATUS,C       ;
+000D   2???           00035         goto     en_ordn        ; if result > 0 go to end sort
+000E   08??           00036         movf     tmin1_on,W     ; otherwise swaps tmin1_on and tmin2_on 
+000F   00??           00037         movwf    w_num1         ;
+0010   08??           00038         movf     tmin2_on,W     ;  
+0011   00??           00039         movwf    tmin1_on       ;
+0012   08??           00040         movf     w_num1,W       ; 
+0013   00??           00041         movwf    tmin2_on       ;
+0014                  00042 ord_on2
+0014   08??           00043         movf     tmin2_on,W     ; 
+0015   02??           00044         subwf    tmin3_on,W     ; calculate tmin3_on - tmin2_on
+0016   1803           00045         btfsc    STATUS,C       ;
+0017   2???           00046         goto     en_ordn        ; if result > 0 go to end sort
+0018   08??           00047         movf     tmin2_on,W     ; otherwise swaps tmin2_on and tmin3_on 
+0019   00??           00048         movwf    w_num1         ;
+001A   08??           00049         movf     tmin3_on,W     ;  
+001B   00??           00050         movwf    tmin2_on       ;
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+001C   08??           00051         movf     w_num1,W       ; 
+001D   00??           00052         movwf    tmin3_on       ;
+001E                  00053 en_ordn
+001E   0008           00054         return
+                      00055 
+                      00056 ;       Ascending sort routine for
+                      00057 ;       tmin1_of, tmin2_of, tmin3_of
+001F                  00058 ord_of
+001F   08??           00059         movf     tmin2_of,W     ; 
+0020   02??           00060         subwf    tmin3_of,W     ; calculate tmin3_of - tmin2_of
+0021   1803           00061         btfsc    STATUS,C       ;
+0022   2???           00062         goto     ord_of1        ; if result > 0 go on
+0023   08??           00063         movf     tmin2_of,W     ; otherwise swaps tmin2_of and tmin3_of 
+0024   00??           00064         movwf    w_num1         ;
+0025   08??           00065         movf     tmin3_of,W     ;  
+0026   00??           00066         movwf    tmin2_of       ;
+0027   08??           00067         movf     w_num1,W       ; 
+0028   00??           00068         movwf    tmin3_of       ;
+0029                  00069 ord_of1
+0029   08??           00070         movf     tmin1_of,W     ; 
+002A   02??           00071         subwf    tmin2_of,W     ; calculate tmin2_of - tmin1_of
+002B   1803           00072         btfsc    STATUS,C       ;
+002C   2???           00073         goto     en_ordf        ; if result > 0 go to end sort
+002D   08??           00074         movf     tmin1_of,W     ; otherwise swaps tmin1_of and tmin2_of 
+002E   00??           00075         movwf    w_num1         ;
+002F   08??           00076         movf     tmin2_of,W     ;  
+0030   00??           00077         movwf    tmin1_of       ;
+0031   08??           00078         movf     w_num1,W       ; 
+0032   00??           00079         movwf    tmin2_of       ;
+0033                  00080 ord_of2
+0033   08??           00081         movf     tmin2_of,W     ; 
+0034   02??           00082         subwf    tmin3_of,W     ; calculate tmin3_of - tmin2_of
+0035   1803           00083         btfsc    STATUS,C       ;
+0036   2???           00084         goto     en_ordf        ; if result > 0 go to end sort
+0037   08??           00085         movf     tmin2_of,W     ; otherwise swaps tmin2_on and tmin3_on 
+0038   00??           00086         movwf    w_num1         ;
+0039   08??           00087         movf     tmin3_of,W     ;  
+003A   00??           00088         movwf    tmin2_of       ;
+003B   08??           00089         movf     w_num1,W       ; 
+003C   00??           00090         movwf    tmin3_of       ;
+003D                  00091 en_ordf
+003D   0008           00092         return  
+                      00093 
+                      00094 
+                      00095 
+                      00096                 end
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+en_ordf                           0000003D
+MPASM 03.80 Released                               CWSORT.ASM   2-11-2005  15:17:59         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+en_ordn                           0000001E
+ord_of                            0000001F
+ord_of1                           00000029
+ord_of2                           00000033
+ord_on                            00000000
+ord_on1                           0000000A
+ord_on2                           00000014
+tmin1_of                          00000003
+tmin1_on                          00000000
+tmin2_of                          00000004
+tmin2_on                          00000001
+tmin3_of                          00000005
+tmin3_on                          00000002
+w_count                           00000000
+w_num1                            00000000
+w_num2                            00000000
+w_num3                            00000000
+w_num4                            00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

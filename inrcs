@@ -1,0 +1,40 @@
+#!/bin/sh
+RCS=rcs
+CI=ci
+$RCS -i -zLT -t-"CW reader binary to ASCII conversion" CWbinasc.asm
+$RCS -i -zLT -t-"CW reader decode CW routines" CWdecode.asm
+$RCS -i -zLT -t-"CW reader delay routines" CWdelay.asm
+$RCS -i -zLT -t-"CW reader initialization" CWinit.asm
+$RCS -i -zLT -t-"CW reader interrupt service routine" CWinter.asm
+$RCS -i -zLT -t-"CW reader LCD routines" CWlcd.asm
+$RCS -i -zLT -t-"CW reader multiply and divide routines" CWmuldiv.asm
+$RCS -i -zLT -t-"CW reader calculate rate routines" CWrate.asm
+$RCS -i -zLT -t-"CW reader mainline" CWreadr.asm
+$RCS -i -zLT -t-"CW reader show speed" CWshospd.asm
+$RCS -i -zLT -t-"CW reader sort routines" CWsort.asm
+$RCS -i -zLT -t-"CW reader Morse lookup tables" CWtables.asm
+$RCS -i -zLT -t-"CW reader table search routines" CWtabsrch.asm
+$RCS -i -zLT -t-"CW reader welcome message" CWwelcome.asm
+$RCS -i -zLT -t-"CW reader MPLAB project file" CWreadr.mcp
+$RCS -i -zLT -t-"CW reader call tree" CWreadr.dot
+$RCS -i -zLT -t-"Original CW reader - absolute code version for 628" cwtool.asm
+$RCS -i -zLT -t-"Original CW reader - MPLAB project for 628" cwtool.mcp
+
+$CI -l -zLT -d CWbinasc.asm
+$CI -l -zLT -d CWdecode.asm
+$CI -l -zLT -d CWdelay.asm
+$CI -l -zLT -d CWinit.asm
+$CI -l -zLT -d CWinter.asm
+$CI -l -zLT -d CWlcd.asm
+$CI -l -zLT -d CWmuldiv.asm
+$CI -l -zLT -d CWrate.asm
+$CI -l -zLT -d CWreadr.asm
+$CI -l -zLT -d CWshospd.asm
+$CI -l -zLT -d CWsort.asm
+$CI -l -zLT -d CWtables.asm
+$CI -l -zLT -d CWtabsrch.asm
+$CI -l -zLT -d CWwelcome.asm
+$CI -l -zLT -d CWreadr.mcp
+$CI -l -zLT -d CWreadr.dot
+$CI -l -zLT -d cwtool.asm
+$CI -l -zLT -d cwtool.mcp

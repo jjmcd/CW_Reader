@@ -1,0 +1,443 @@
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       Table search routines
+                      00002                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00003 
+  0000                00004                 global          ric_a,ric_b,ric_c,ric_d,ric_e,ric_f
+                      00005 
+  0000                00006                 extern  tab_a,tab_b,tab_c,tab_d,tab_e,tab_f
+  0000                00007                 extern  w_num1,w_count
+  0000                00008                 extern  w_conv,pldata
+                      00009 
+                      00010                 code
+                      00011 
+                      00012 ;       Tab search subroutines 
+                      00013 ;
+                      00014 ;       input :         
+                      00015 ;       - PLDATA area containing received values (0=dit,1=dash) 
+                      00016 ;
+                      00017 ;       output :
+                      00018 ;       - decoded character in w_conv  
+                      00019 ;       
+0000                  00020 ric_a
+0000   0103           00021         clrw                    ; initial offset = 0
+0001                  00022 ric_a1
+0001   00??           00023         movwf    w_count        ; save current offset
+0002   2???           00024         call     tab_a          ; search entry at offset W
+0003   00??           00025         movwf    w_num1         ; save found map 
+0004   30FF           00026         movlw    b'11111111'    ; verify if tab bottom reached
+0005   02??           00027         subwf    w_num1,W       ;
+0006   1D03           00028         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+0007   2???           00029         goto     ric_a2         ; otherwise verify the map 
+0008   302A           00030         movlw    "*"            ;
+0009   2???           00031         goto     ric_a4         ;
+000A                  00032 ric_a2
+000A   08??           00033         movf     w_num1,W       ; restore in W the map
+000B   02??           00034         subwf    pldata,W       ; and verify if matches to PLDATA
+000C   1903           00035         btfsc    STATUS,Z       ; if not re-cycle
+000D   2???           00036         goto     ric_a3
+000E   08??           00037         movf     w_count,W      ; restore current offset to W
+000F   3E02           00038         addlw    d'2'           ; 2 locations increment
+0010   2???           00039         goto     ric_a1         ; and re-cycle
+0011                  00040 ric_a3
+0011   08??           00041         movf     w_count,W      ; if map matches
+0012   3E01           00042         addlw    d'1'           ; 1 location increment
+0013   2???           00043         call     tab_a          ; and get corresponding character
+0014                  00044 ric_a4
+0014   00??           00045         movwf    w_conv
+0015   0008           00046         return
+                      00047 
+0016                  00048 ric_b
+0016   0103           00049         clrw                    ; initial offset = 0
+0017                  00050 ric_b1
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0017   00??           00051         movwf    w_count        ; save current offset
+0018   2???           00052         call     tab_b          ; search entry at offset W
+0019   00??           00053         movwf    w_num1         ; save found map 
+001A   30FF           00054         movlw    b'11111111'    ; verify if tab bottom reached
+001B   02??           00055         subwf    w_num1,W       ;
+001C   1D03           00056         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+001D   2???           00057         goto     ric_b2         ; otherwise verify the map
+001E   302A           00058         movlw    "*"            ;
+001F   2???           00059         goto     ric_b4         ;
+0020                  00060 ric_b2
+0020   08??           00061         movf     w_num1,W       ; restore in W the map
+0021   02??           00062         subwf    pldata,W       ; and verify if matches to PLDATA
+0022   1903           00063         btfsc    STATUS,Z       ; if not re-cycle
+0023   2???           00064         goto     ric_b3
+0024   08??           00065         movf     w_count,W      ; restore current offset to W
+0025   3E02           00066         addlw    d'2'           ; 2 locations increment
+0026   2???           00067         goto     ric_b1         ; and re-cycle
+0027                  00068 ric_b3
+0027   08??           00069         movf     w_count,W      ; if map matches
+0028   3E01           00070         addlw    d'1'           ; 1 location increment
+0029   2???           00071         call     tab_b          ; and get corresponding character
+002A                  00072 ric_b4
+002A   00??           00073         movwf    w_conv
+002B   0008           00074         return
+                      00075 
+002C                  00076 ric_c
+002C   0103           00077         clrw                    ; initial offset = 0
+002D                  00078 ric_c1
+002D   00??           00079         movwf    w_count        ; save current offset
+002E   2???           00080         call     tab_c          ; search entry at offset W
+002F   00??           00081         movwf    w_num1         ; save found map 
+0030   30FF           00082         movlw    b'11111111'    ; verify if tab bottom reached
+0031   02??           00083         subwf    w_num1,W       ;
+0032   1D03           00084         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+0033   2???           00085         goto     ric_c2         ; otherwise verify the map
+0034   302A           00086         movlw    "*"            ;
+0035   2???           00087         goto     ric_c4         ;
+0036                  00088 ric_c2
+0036   08??           00089         movf     w_num1,W       ; restore in W the map
+0037   02??           00090         subwf    pldata,W       ; and verify if matches to PLDATA
+0038   1903           00091         btfsc    STATUS,Z       ; if not re-cycle
+0039   2???           00092         goto     ric_c3
+003A   08??           00093         movf     w_count,W      ; restore current offset to W
+003B   3E02           00094         addlw    d'2'           ; 2 locations increment
+003C   2???           00095         goto     ric_c1         ; and re-cycle
+003D                  00096 ric_c3
+003D   08??           00097         movf     w_count,W      ; if map matches
+003E   3E01           00098         addlw    d'1'           ; 1 location increment
+003F   2???           00099         call     tab_c          ; and get corresponding character
+0040                  00100 ric_c4
+0040   00??           00101         movwf    w_conv
+0041   0008           00102         return
+                      00103 
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0042                  00104 ric_d
+0042   0103           00105         clrw                    ; initial offset = 0
+0043                  00106 ric_d1
+0043   00??           00107         movwf    w_count        ; save current offset
+0044   2???           00108         call     tab_d          ; search entry at offset W
+0045   00??           00109         movwf    w_num1         ; save found map 
+0046   30FF           00110         movlw    b'11111111'    ; verify if tab bottom reached
+0047   02??           00111         subwf    w_num1,W       ;
+0048   1D03           00112         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+0049   2???           00113         goto     ric_d2         ; otherwise verify the map
+004A   302A           00114         movlw    "*"            ;
+004B   2???           00115         goto     ric_d4         ;
+004C                  00116 ric_d2
+004C   08??           00117         movf     w_num1,W       ; restore in W the map
+004D   02??           00118         subwf    pldata,W       ; and verify if matches to PLDATA
+004E   1903           00119         btfsc    STATUS,Z       ; if not re-cycle
+004F   2???           00120         goto     ric_d3
+0050   08??           00121         movf     w_count,W      ; restore current offset to W
+0051   3E02           00122         addlw    d'2'           ; 2 locations increment
+0052   2???           00123         goto     ric_d1         ; and re-cycle
+0053                  00124 ric_d3
+0053   08??           00125         movf     w_count,W      ; if map matches
+0054   3E01           00126         addlw    d'1'           ; 1 location increment
+0055   2???           00127         call     tab_d          ; and get corresponding character
+0056                  00128 ric_d4
+0056   00??           00129         movwf    w_conv
+0057   0008           00130         return
+                      00131 
+0058                  00132 ric_e
+0058   0103           00133         clrw                    ; initial offset = 0
+0059                  00134 ric_e1
+0059   00??           00135         movwf    w_count        ; save current offset
+005A   2???           00136         call     tab_e          ; search entry at offset W
+005B   00??           00137         movwf    w_num1         ; save found map 
+005C   30FF           00138         movlw    b'11111111'    ; verify if tab bottom reached
+005D   02??           00139         subwf    w_num1,W       ;
+005E   1D03           00140         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+005F   2???           00141         goto     ric_e2         ; otherwise verify the map
+0060   302A           00142         movlw    "*"            ;
+0061   2???           00143         goto     ric_e4         ;
+0062                  00144 ric_e2
+0062   08??           00145         movf     w_num1,W       ; restore in W the map
+0063   02??           00146         subwf    pldata,W       ; and verify if matches to PLDATA
+0064   1903           00147         btfsc    STATUS,Z       ; if not re-cycle
+0065   2???           00148         goto     ric_e3
+0066   08??           00149         movf     w_count,W      ; restore current offset to W
+0067   3E02           00150         addlw    d'2'           ; 2 locations increment
+0068   2???           00151         goto     ric_e1         ; and re-cycle
+0069                  00152 ric_e3
+0069   08??           00153         movf     w_count,W      ; if map matches
+006A   3E01           00154         addlw    d'1'           ; 1 location increment
+006B   2???           00155         call     tab_e          ; and get corresponding character
+006C                  00156 ric_e4
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+006C   00??           00157         movwf    w_conv
+006D   0008           00158         return
+                      00159 
+006E                  00160 ric_f
+006E   0103           00161         clrw                    ; initial offset = 0
+006F                  00162 ric_f1
+006F   00??           00163         movwf    w_count        ; save current offset
+0070   2???           00164         call     tab_f          ; search entry at offset W
+0071   00??           00165         movwf    w_num1         ; save found map 
+0072   30FF           00166         movlw    b'11111111'    ; verify if tab bottom reached
+0073   02??           00167         subwf    w_num1,W       ;
+0074   1D03           00168         btfss    STATUS,Z       ; if so enforce "*" in w_conv
+0075   2???           00169         goto     ric_f2         ; otherwise verify the map
+0076   302A           00170         movlw    "*"            ;
+0077   2???           00171         goto     ric_f4         ;
+0078                  00172 ric_f2
+0078   08??           00173         movf     w_num1,W       ; restore in W the map
+0079   02??           00174         subwf    pldata,W       ; and verify if matches to PLDATA
+007A   1903           00175         btfsc    STATUS,Z       ; if not re-cycle
+007B   2???           00176         goto     ric_f3
+007C   08??           00177         movf     w_count,W      ; restore current offset to W
+007D   3E02           00178         addlw    d'2'           ; 2 locations increment
+007E   2???           00179         goto     ric_f1         ; and re-cycle
+007F                  00180 ric_f3
+007F   08??           00181         movf     w_count,W      ; if map matches
+0080   3E01           00182         addlw    d'1'           ; 1 location increment
+0081   2???           00183         call     tab_f          ; and get corresponding character
+0082                  00184 ric_f4
+0082   00??           00185         movwf    w_conv
+0083   0008           00186         return
+                      00187                  
+                      00188                 end
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+pldata                            00000000
+MPASM 03.80 Released                            CWTABSRCH.ASM   2-11-2005  15:17:57         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ric_a                             00000000
+ric_a1                            00000001
+ric_a2                            0000000A
+ric_a3                            00000011
+ric_a4                            00000014
+ric_b                             00000016
+ric_b1                            00000017
+ric_b2                            00000020
+ric_b3                            00000027
+ric_b4                            0000002A
+ric_c                             0000002C
+ric_c1                            0000002D
+ric_c2                            00000036
+ric_c3                            0000003D
+ric_c4                            00000040
+ric_d                             00000042
+ric_d1                            00000043
+ric_d2                            0000004C
+ric_d3                            00000053
+ric_d4                            00000056
+ric_e                             00000058
+ric_e1                            00000059
+ric_e2                            00000062
+ric_e3                            00000069
+ric_e4                            0000006C
+ric_f                             0000006E
+ric_f1                            0000006F
+ric_f2                            00000078
+ric_f3                            0000007F
+ric_f4                            00000082
+tab_a                             00000000
+tab_b                             00000000
+tab_c                             00000000
+tab_d                             00000000
+tab_e                             00000000
+tab_f                             00000000
+w_conv                            00000000
+w_count                           00000000
+w_num1                            00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

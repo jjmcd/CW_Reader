@@ -1,0 +1,30 @@
+ bytelcd
+ cntchar
+ ctrsegn
+  pldata
+   plval
+    rit1
+    rit2
+  save_s
+  save_w
+   speed
+ swinput
+ timchr1
+ timchr2
+ timeoff
+  timeon
+ tmax_of
+ tmed_of
+ tmed_on
+tmin1_of
+tmin1_on
+tmin2_of
+tmin2_on
+tmin3_of
+tmin3_on
+  w_conv
+ w_count
+  w_num1
+  w_num2
+  w_num3
+  w_num4

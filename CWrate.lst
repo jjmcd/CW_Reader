@@ -1,0 +1,311 @@
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       CW rate calculation
+                      00002                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00003                 include         CWdefs.inc
+                      00001 ;       Constants used by multiple routines
+                      00002 
+                      00003 ;       program constants definitions  
+  00000000            00004 swon    equ      0x00
+  00000001            00005 swoff   equ      0x01   
+                      00006 
+                      00007 ;       program settable parameters 
+  00000008            00008 chrparm equ      0x08           ; chars number for speed calculation
+  00000028            00009 rowparm equ      0x28           ; chars number on the LCD raw
+  0000000F            00010 sgparm  equ      0x0f           ; dit/dashes number for param. refresh  
+                      00011          
+                      00012 ; port_a bits
+  00000001            00013 bit_P0  equ     1
+  00000002            00014 bit_P1  equ     2
+  00000004            00015 bit_CW  equ     4
+                      00016 ; port_b bits
+  00000003            00017 bit_EN  equ     3
+  00000001            00018 bit_RS  equ     1
+                      00019 
+                      00004 
+  0000                00005                 global          cw_rate,agspeed
+  0000                00006                 global          cntchar
+  0000                00007                 extern          moltip,dividi
+  0000                00008                 extern          w_num1,w_num2,w_num3,timchr1,timchr2,speed
+  0000                00009                 extern          plval
+                      00010 
+                      00011                 udata
+0000                  00012 cntchar res             1                               ; received characters counter  
+                      00013                 code
+                      00014 
+                      00015 ;       Speed rate calculation routine
+                      00016 ;       
+                      00017 ;       is applied the formula V = (600 x chrparm)/ timchr1  
+                      00018 ;       where chrparm is the provided number of characters
+                      00019 ;       timchr1 is the chars packet duration in sec/10         
+                      00020 ;
+0000                  00021 cw_rate
+0000   300A           00022         movlw    d'10'
+0001   00??           00023         movwf    w_num2
+0002   3008           00024         movlw    chrparm
+0003   00??           00025         movwf    w_num3         ; compute chrparm x 10
+0004   2???           00026         call     moltip
+0005   303C           00027         movlw    d'60'
+0006   00??           00028         movwf    w_num3         ; compute chrparm x 10 x 60
+0007   2???           00029         call     moltip
+0008   08??           00030         movf     timchr1,W      
+0009   00??           00031         movwf    w_num3         ; set the divisor to timchr1
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000A   2???           00032         call     dividi
+000B   08??           00033         movf     w_num2,W
+000C   07??           00034         addwf    w_num2,W       ; multiply remainder x 2
+000D   02??           00035         subwf    timchr1,W      ; compare timchr1 to (remainder x 2)
+000E   1803           00036         btfsc    STATUS,C       ;
+000F   2???           00037         goto     cw_rate1       ; if result > 0 there is no rounding
+0010   0A??           00038         incf     w_num1,F       ; otherwise rounding to the upper digit  
+0011                  00039 cw_rate1
+0011   08??           00040         movf     w_num1,W
+0012   00??           00041         movwf    speed
+0013   0008           00042         return
+                      00043 
+                      00044 ;       Speed rate update routine 
+                      00045 ;
+0014                  00046 agspeed
+0014   3008           00047         movlw    chrparm
+0015   02??           00048         subwf    cntchar,W      ; compare counter to the stated limit
+0016   1C03           00049         btfss    STATUS,C       ; if counter >= limit : skip
+0017   2???           00050         goto     agsped2        ; if counter < limite go to end    
+0018   01??           00051         clrf     cntchar        ; clear counter
+0019   08??           00052         movf     plval,F        ; verify PLVAL content
+001A   1903           00053         btfsc    STATUS,Z       ; skip if <> zero
+001B   2???           00054         goto     agsped1        ; otherwise bypass speed calculation
+001C   2???           00055         call     cw_rate
+001D                  00056 agsped1
+001D   01??           00057         clrf     timchr1
+001E   01??           00058         clrf     timchr2
+001F                  00059 agsped2
+001F   0A??           00060         incf     cntchar,F
+0020   0008           00061         return  
+                      00062 
+                      00063 
+                      00064                 end
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+agsped1                           0000001D
+MPASM 03.80 Released                               CWRATE.ASM   2-11-2005  15:18:03         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+agsped2                           0000001F
+agspeed                           00000014
+bit_CW                            00000004
+bit_EN                            00000003
+bit_P0                            00000001
+bit_P1                            00000002
+bit_RS                            00000001
+chrparm                           00000008
+cntchar                           00000000
+cw_rate                           00000000
+cw_rate1                          00000011
+dividi                            00000000
+moltip                            00000000
+plval                             00000000
+rowparm                           00000028
+sgparm                            0000000F
+speed                             00000000
+swoff                             00000001
+swon                              00000000
+timchr1                           00000000
+timchr2                           00000000
+w_num1                            00000000
+w_num2                            00000000
+w_num3                            00000000
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

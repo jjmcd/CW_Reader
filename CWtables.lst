@@ -1,0 +1,373 @@
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00002 
+  0000                00003                 global  tab_a,tab_b,tab_c,tab_d,tab_e,tab_f
+                      00004 Tables          code    H'0005'
+                      00005 ;     subroutine searching the character with W offset in the 1 sign tab_char
+0005                  00006 tab_a
+                      00007         
+0005   0782           00008         addwf    PCL,1          ; increments jump address
+0006   3400           00009         dt       b'00000000'    ; only a dit
+0007   3445           00010         dt       "E"
+0008   3401           00011         dt       b'00000001'    ; only a dash 
+0009   3454           00012         dt       "T"
+000A   34FF           00013         dt       b'11111111'    ; filler
+000B   3420           00014         dt       " "
+000C                  00015 endtb_a
+                      00016 
+                      00017 ;     subroutine searching the character with W offset in the 2 signs tab_char
+000C                  00018 tab_b
+                      00019         
+000C   0782           00020         addwf    PCL,1          ; increments jump address
+000D   3400           00021         dt       b'00000000'    ; ..
+000E   3449           00022         dt       "I"
+000F   3402           00023         dt       b'00000010'    ; .-
+0010   3441           00024         dt       "A"
+0011   3401           00025         dt       b'00000001'    ; -.
+0012   344E           00026         dt       "N"
+0013   3403           00027         dt       b'00000011'    ; --
+0014   344D           00028         dt       "M"
+0015   34FF           00029         dt       b'11111111'    ; filler
+0016   3420           00030         dt       " "
+0017                  00031 endtb_b
+                      00032 
+                      00033 ;     subroutine searching the character with W offset in the 3 signs tab_char
+0017                  00034 tab_c
+                      00035         
+0017   0782           00036         addwf    PCL,1          ; increments jump address
+0018   3400           00037         dt       b'00000000'    ; ...
+0019   3453           00038         dt       "S"
+001A   3404           00039         dt       b'00000100'    ; ..-
+001B   3455           00040         dt       "U"
+001C   3402           00041         dt       b'00000010'    ; .-.
+001D   3452           00042         dt       "R"
+001E   3406           00043         dt       b'00000110'    ; .--
+001F   3457           00044         dt       "W"
+0020   3401           00045         dt       b'00000001'    ; -..
+0021   3444           00046         dt       "D"
+0022   3405           00047         dt       b'00000101'    ; -.-
+0023   344B           00048         dt       "K"
+0024   3403           00049         dt       b'00000011'    ; --.
+0025   3447           00050         dt       "G"
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0026   3407           00051         dt       b'00000111'    ; ---
+0027   344F           00052         dt       "O"
+0028   34FF           00053         dt       b'11111111'    ; filler
+0029   3420           00054         dt       " "
+002A                  00055 endtb_c
+                      00056 
+                      00057 ;     subroutine searching the character with W offset in the 4 signs tab_char
+002A                  00058 tab_d
+                      00059         
+002A   0782           00060         addwf    PCL,1          ; increments jump address
+002B   3400           00061         dt       b'00000000'    ; ....
+002C   3448           00062         dt       "H"
+002D   3408           00063         dt       b'00001000'    ; ...-
+002E   3456           00064         dt       "V"
+002F   3404           00065         dt       b'00000100'    ; ..-.
+0030   3446           00066         dt       "F"
+0031   3402           00067         dt       b'00000010'    ; .-..
+0032   344C           00068         dt       "L"
+0033   3406           00069         dt       b'00000110'    ; .--.
+0034   3450           00070         dt       "P"
+0035   340E           00071         dt       b'00001110'    ; .---
+0036   344A           00072         dt       "J"
+0037   3401           00073         dt       b'00000001'    ; -...
+0038   3442           00074         dt       "B"
+0039   3409           00075         dt       b'00001001'    ; -..-
+003A   3458           00076         dt       "X"
+003B   3405           00077         dt       b'00000101'    ; -.-.
+003C   3443           00078         dt       "C"
+003D   340D           00079         dt       b'00001101'    ; -.--
+003E   3459           00080         dt       "Y"
+003F   3403           00081         dt       b'00000011'    ; --..
+0040   345A           00082         dt       "Z"
+0041   340B           00083         dt       b'00001011'    ; --.-
+0042   3451           00084         dt       "Q"
+0043   34FF           00085         dt       b'11111111'    ; filler
+0044   3420           00086         dt       " "
+0045                  00087 endtb_d
+                      00088 
+                      00089 ;     subroutine searching the character with W offset in the 5 signs tab_char
+0045                  00090 tab_e
+                      00091         
+0045   0782           00092         addwf    PCL,1          ; increments jump address
+0046   3400           00093         dt       b'00000000'    ; .....
+0047   3435           00094         dt       "5"
+0048   3410           00095         dt       b'00010000'    ; ....-
+0049   3434           00096         dt       "4"
+004A   3418           00097         dt       b'00011000'    ; ...--
+004B   3433           00098         dt       "3"
+004C   341C           00099         dt       b'00011100'    ; ..---
+004D   3432           00100         dt       "2"
+004E   341E           00101         dt       b'00011110'    ; .----
+004F   3431           00102         dt       "1"
+0050   341F           00103         dt       b'00011111'    ; -----
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0051   3430           00104         dt       "0"
+0052   3401           00105         dt       b'00000001'    ; -....
+0053   3436           00106         dt       "6"
+0054   3403           00107         dt       b'00000011'    ; --...
+0055   3437           00108         dt       "7"
+0056   3407           00109         dt       b'00000111'    ; ---..
+0057   3438           00110         dt       "8"
+0058   340F           00111         dt       b'00001111'    ; ----.
+0059   3439           00112         dt       "9"
+005A   3411           00113         dt       b'00010001'    ; -...-
+005B   343D           00114         dt       "="
+005C   3409           00115         dt       b'00001001'    ; -..-.
+005D   342F           00116         dt       "/"
+005E   3402           00117         dt       b'00000010'    ; .-...
+005F   3477           00118         dt       "w"
+0060   3416           00119         dt       b'00010110'    ; -.--.  same as KN :-(
+0061   3428           00120         dt       "("
+0062   34FF           00121         dt       b'11111111'    ; filler
+0063   3420           00122         dt       " "
+0064                  00123 endtb_e
+                      00124 
+                      00125 ;     subroutine searching the character with W offset in the 6 signs tab_char
+0064                  00126 tab_f
+                      00127         
+0064   0782           00128         addwf    PCL,1          ; increments jump address
+0065   3428           00129         dt       b'00101000'    ; ...-.-   SK
+0066   3423           00130         dt       "#"
+0067   340C           00131         dt       b'00001100'    ; ..--.. 
+0068   343F           00132         dt       "?"
+0069   3421           00133         dt       b'00100001'    ; -....-
+006A   342D           00134         dt       "-"
+006B   342A           00135         dt       b'00101010'    ; .-.-.-
+006C   342E           00136         dt       "."
+006D   3433           00137         dt       b'00110011'    ; --..--
+006E   342C           00138         dt       ","
+006F   342D           00139         dt       b'00101101'    ; -.--.-
+0070   3429           00140         dt       ")"
+0071   342A           00141         dt       b'00101010'    ; -.-.-.
+0072   343B           00142         dt       ";"
+0073   3412           00143         dt       b'00010010'    ; .-..-.
+0074   3422           00144         dt       022h
+0075   341E           00145         dt       b'00011110'    ; .----.
+0076   3427           00146         dt       "'"
+0077   340D           00147         dt       b'00001101'    ; ..--.-
+0078   345F           00148         dt       "_"
+0079   34FF           00149         dt       b'11111111'    ; filler
+007A   3420           00150         dt       " "
+007B                  00151 endtb_f
+                      00152         end
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+endtb_a                           0000000C
+MPASM 03.80 Released                             CWTABLES.ASM   2-11-2005  15:17:47         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+endtb_b                           00000017
+endtb_c                           0000002A
+endtb_d                           00000045
+endtb_e                           00000064
+endtb_f                           0000007B
+tab_a                             00000005
+tab_b                             0000000C
+tab_c                             00000017
+tab_d                             0000002A
+tab_e                             00000045
+tab_f                             00000064
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

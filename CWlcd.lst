@@ -1,0 +1,372 @@
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       LCD routines
+                      00002                 include         p16f628.inc
+                      00001         LIST
+                      00002 ; P16F628.INC  Standard Header File, Version 1.01    Microchip Technology, Inc.
+                      00261         LIST
+                      00003                 include         CWdefs.inc
+                      00001 ;       Constants used by multiple routines
+                      00002 
+                      00003 ;       program constants definitions  
+  00000000            00004 swon    equ      0x00
+  00000001            00005 swoff   equ      0x01   
+                      00006 
+                      00007 ;       program settable parameters 
+  00000008            00008 chrparm equ      0x08           ; chars number for speed calculation
+  00000028            00009 rowparm equ      0x28           ; chars number on the LCD raw
+  0000000F            00010 sgparm  equ      0x0f           ; dit/dashes number for param. refresh  
+                      00011          
+                      00012 ; port_a bits
+  00000001            00013 bit_P0  equ     1
+  00000002            00014 bit_P1  equ     2
+  00000004            00015 bit_CW  equ     4
+                      00016 ; port_b bits
+  00000003            00017 bit_EN  equ     3
+  00000001            00018 bit_RS  equ     1
+                      00019 
+                      00004 
+  0000                00005                 global          sendlcd,cmdlcd,wrtlcd,bytelcd,inilcd
+  0000                00006                 extern          delcd,del50
+  0000                00007                 extern          w_num1,w_count
+                      00008 
+                      00009                 udata
+0000                  00010 bytelcd res 1 ;      0x0f
+                      00011 
+                      00012 
+                      00013                 code
+                      00014 ;     LCD display initialization routine
+                      00015 ;         - 1 raw 5x7
+                      00016 ;         - 4 bit operation
+                      00017 ;         - no cursor           
+0000                  00018 inilcd
+0000   3038           00019         movlw    b'00111000'    ; 8 bits initialization
+0001   0086           00020         movwf    PORTB         
+0002   1186           00021         bcf      PORTB,bit_EN       ; reset enable
+0003   2???           00022         call     del50
+0004   3038           00023         movlw    b'00111000'    ; repeat 8 bits initialization
+0005   0086           00024         movwf    PORTB         
+0006   1186           00025         bcf      PORTB,bit_EN       ; reset enable
+0007   2???           00026         call     del50
+0008   3038           00027         movlw    b'00111000'    ; repeat 8 bits initialization
+0009   0086           00028         movwf    PORTB         
+000A   1186           00029         bcf      PORTB,bit_EN       ; reset enable
+000B   2???           00030         call     del50
+000C   3028           00031         movlw    b'00101000'    ; 4 bits initialization
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000D   0086           00032         movwf    PORTB         
+000E   1186           00033         bcf      PORTB,bit_EN       ; reset enable
+000F   2???           00034         call     del50
+                      00035 
+0010   3020           00036         movlw    b'00100000'    ; set one 5x7 line
+0011   00??           00037         movwf    bytelcd         
+0012   2???           00038         call     cmdlcd         ; send command
+0013   2???           00039         call     del50
+                      00040 
+0014   3007           00041         movlw    b'00000111'    ; set LCD mode 
+0015   00??           00042         movwf    bytelcd        ; cursor increment/display shift        
+0016   2???           00043         call     cmdlcd         ; send command
+0017   2???           00044         call     del50
+                      00045 
+0018   300C           00046         movlw    b'00001100'    ; display on / cursor off
+0019   00??           00047         movwf    bytelcd         
+001A   2???           00048         call     cmdlcd         ; send command
+001B   2???           00049         call     del50
+                      00050 
+001C   3001           00051         movlw    b'00000001'    ; clear LCD / home cursor
+001D   00??           00052         movwf    bytelcd         
+001E   2???           00053         call     cmdlcd         ; send command
+001F   2???           00054         call     del50
+                      00055 
+0020   3028           00056         movlw    rowparm
+0021   3880           00057         iorlw    0x80           ; set cursor at row end         
+0022   00??           00058         movwf    bytelcd         
+0023   2???           00059         call     cmdlcd         ; send command
+0024   2???           00060         call     del50
+0025                  00061 endlcd
+0025   0008           00062         return
+                      00063 
+                      00064 ;       LCD display routine 
+                      00065 ;
+                      00066 ;       input :         - string to display, starting at w_num1
+                      00067 ;                       - characters number to display in w_count
+                      00068 ;
+                      00069 ;       output :        - send to LCD display  
+                      00070 ;       
+0026                  00071 sendlcd
+0026   30??           00072         movlw    w_num1
+0027   0084           00073         movwf    FSR            ; load pointer to w_num1
+0028                  00074 sendlc1
+0028   0800           00075         movf     INDF,W ;
+0029   00??           00076         movwf    bytelcd        ; move to bytelcd the character to send 
+002A   2???           00077         call     wrtlcd
+002B   0A84           00078         incf     FSR,F          ; position INDF at next character       
+002C   0B??           00079         decfsz   w_count,F      ; re-cycle until counter is zero
+002D   2???           00080         goto     sendlc1
+002E                  00081 endsend
+002E   0008           00082         return
+                      00083 
+                      00084 ;     This routine sends a command to LCD display (4 bits at a time)
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+002F                  00085 cmdlcd
+002F   08??           00086         movf     bytelcd,W
+0030   39F0           00087         andlw    b'11110000'    ; clear right nibble
+0031   3808           00088         iorlw    b'00001000'    ; set RS = 0, ENA = 1
+0032   0086           00089         movwf    PORTB         ; move nibble to PORTB
+0033   1186           00090         bcf      PORTB,bit_EN       ; enable goes down
+0034   2???           00091         call     delcd          ; one delay
+                      00092         
+0035   0E??           00093         swapf    bytelcd,0      ; exchange nibbles in bytelcd
+0036   39F0           00094         andlw    b'11110000'
+0037   3808           00095         iorlw    b'00001000'  
+0038   0086           00096         movwf    PORTB
+0039   1186           00097         bcf      PORTB,bit_EN
+003A   2???           00098         call     delcd
+003B                  00099 endcmlc
+003B   0008           00100         return                
+                      00101 
+                      00102 ;       This routine sends a character to LCD display (4 bits at a time)
+003C                  00103 wrtlcd
+003C   08??           00104         movf     bytelcd,W
+003D   39F0           00105         andlw    b'11110000'    ; clear right nibble
+003E   380A           00106         iorlw    b'00001010'    ; set RS = 1, ENA = 1
+003F   0086           00107         movwf    PORTB         ; move nibble to PORTB
+0040   1186           00108         bcf      PORTB,bit_EN       ; enable goes down
+0041   2???           00109         call     delcd          ; one delay
+                      00110         
+0042   0E??           00111         swapf    bytelcd,W      ; exchange nibbles in bytelcd
+0043   39F0           00112         andlw    b'11110000'
+0044   380A           00113         iorlw    b'00001010'  
+0045   0086           00114         movwf    PORTB
+0046   1186           00115         bcf      PORTB,bit_EN
+0047   2???           00116         call     delcd
+0048                  00117 endwrlc
+0048   0008           00118         return  
+                      00119 
+                      00120         end
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CP_50                            00002BFF
+_CP_75                            000017FF
+_CP_ALL                           000003FF
+_CP_OFF                           00003FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628                          00000001
+bit_CW                            00000004
+MPASM 03.80 Released                                CWLCD.ASM   2-11-2005  15:17:53         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+bit_EN                            00000003
+bit_P0                            00000001
+bit_P1                            00000002
+bit_RS                            00000001
+bytelcd                           00000000
+chrparm                           00000008
+cmdlcd                            0000002F
+del50                             00000000
+delcd                             00000000
+endcmlc                           0000003B
+endlcd                            00000025
+endsend                           0000002E
+endwrlc                           00000048
+inilcd                            00000000
+rowparm                           00000028
+sendlc1                           00000028
+sendlcd                           00000026
+sgparm                            0000000F
+swoff                             00000001
+swon                              00000000
+w_count                           00000000
+w_num1                            00000000
+wrtlcd                            0000003C
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

@@ -1,0 +1,93 @@
+MPASM 03.80 Released                              CWDELAY.ASM   2-11-2005  15:17:51         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;       Delay routines
+                      00002 
+  0000                00003                 global          del50,del05,delcd
+                      00004 
+                      00005                 udata
+0000                  00006 rit1    res 1 ;      0x0c   
+0001                  00007 rit2    res 1 ;      0x0d
+                      00008 
+                      00009                 code
+                      00010 ;       50 mS delay routine 
+0000                  00011 del50
+0000   307D           00012         movlw    d'125'         ; 125 primary cycles
+0001   00??           00013         movwf    rit1           ; 
+0002                  00014 del51
+0002   3064           00015         movlw    d'100'         ; 100 secondary cycles
+0003   00??           00016         movwf    rit2
+0004                  00017 del52
+0004   0064           00018         clrwdt                  ; watchdog clear
+0005   0B??           00019         decfsz   rit2,1         ; decrement counter2
+0006   2???           00020         goto     del52          ; if counter2 > 0 re-cycle                              ; re-cycle
+0007   0B??           00021         decfsz   rit1,1         ; if counter2 = 0 decrement counter1        
+0008   2???           00022         goto     del51          ; if counter1 > 0 re-cycle
+0009                  00023 endl50
+0009   0008           00024         return                  ; end routine
+                      00025 
+                      00026 ;       5 mS delay routine 
+000A                  00027 del05
+000A   3030           00028         movlw    d'48'         ; 48 primary cycles
+000B   00??           00029         movwf    rit1           ; 
+000C                  00030 del051
+000C   3019           00031         movlw    d'25'         ; 25 secondary cycles
+000D   00??           00032         movwf    rit2
+000E                  00033 del052
+000E   0064           00034         clrwdt                  ; watchdog clear
+000F   0B??           00035         decfsz   rit2,1         ; decrement counter2
+0010   2???           00036         goto     del052         ; if counter2 > 0 re-cycle
+0011   0B??           00037         decfsz   rit1,1         ; if counter2 = 0 decrement counter1        
+0012   2???           00038         goto     del051         ; if counter1 > 0 re-cycle
+0013                  00039 endl05
+0013   0008           00040         return                  ; end routine
+                      00041 
+                      00042 ;       0.25 mS delay routine 
+0014                  00043 delcd
+0014   3032           00044         movlw    d'50'          ; 50 delay cycles
+0015   00??           00045         movwf    rit1
+0016                  00046 delcd1  
+0016   0064           00047         clrwdt                  ; watchdog clear
+0017   0000           00048         nop                     ; 1 microsec delay
+0018   0B??           00049         decfsz   rit1,1         ; if counter > 0 re-cycle
+0019   2???           00050         goto     delcd1         
+001A                  00051 endcd
+001A   0008           00052         return                  ; end routine
+                      00053 
+MPASM 03.80 Released                              CWDELAY.ASM   2-11-2005  15:17:51         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00054 
+                      00055                 end
+MPASM 03.80 Released                              CWDELAY.ASM   2-11-2005  15:17:51         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F628                          00000001
+del05                             0000000A
+del051                            0000000C
+del052                            0000000E
+del50                             00000000
+del51                             00000002
+del52                             00000004
+delcd                             00000014
+delcd1                            00000016
+endcd                             0000001A
+endl05                            00000013
+endl50                            00000009
+rit1                              00000000
+rit2                              00000001
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+
